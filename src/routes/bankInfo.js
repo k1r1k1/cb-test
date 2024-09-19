@@ -77,7 +77,7 @@ router.put('/info', async (req, res) => {
 router.delete('/info/:id', async (req, res) => {
   try {
     const { id } = req.params
-    if (!id || typeof id !== 'number') {
+    if (!id) {
       res.status(400).json({
         message: 'id must be number'
       })

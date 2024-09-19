@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 
 import usersRoutes from './routes/users.js'
 import infoRoutes from './routes/bankInfo.js'
+import clientsRoutes from './routes/clients.js'
 
 // config
 
@@ -48,6 +49,7 @@ App.get('/healthcheck', function(req, res) {
 
 App.use(usersRoutes)
 App.use(infoRoutes)
+App.use(clientsRoutes)
 
 App.listen(3000, () => {
   console.log('server listening on: 3000')
