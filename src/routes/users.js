@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
           },
           process.env.APP_SECRET,
           {
-            expiresIn: '1m'
+            expiresIn: '3h'
           }
         )
 

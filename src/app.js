@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 import jwt from 'jsonwebtoken'
 
 import usersRoutes from './routes/users.js'
+import infoRoutes from './routes/bankInfo.js'
 
 // config
 
@@ -46,6 +47,7 @@ App.get('/healthcheck', function(req, res) {
 });
 
 App.use(usersRoutes)
+App.use(infoRoutes)
 
 App.listen(3000, () => {
   console.log('server listening on: 3000')
