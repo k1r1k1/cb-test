@@ -18,44 +18,44 @@ router.get('/accounts', async (_, res) => {
 })
 
 router.post('/accounts', async (req, res) => {
-    const { clientId, name, value } = req.body
-      if (!name || !clientId) {
+  const { clientId, name, value } = req.body
+  if (!name || !clientId) {
+    return res.status(400).json({
+      message: '[name, clientId] fields must not be empty',
+    })
+  } else {
+    if (parseFloat(value) < 0) return res.status(400).json({
+      message: 'value must be more or equal 0',
+    })
+  }
+
+  try {
+
+    Connection.query('SELECT * FROM accounts', async function (err, result) {
+      if (err) throw err
+
+      const foundItem = result.find(item => item.name === name)
+      if (foundItem) {
         res.status(400).json({
-          message: '[name, clientId] fields must not be empty',
+          message: 'name must be unique',
         })
       } else {
-        if (parseFloat(value) < 0) return res.status(400).json({
-          message: 'value must be more or equal 0',
+        await Connection.promise().query(
+          `INSERT INTO accounts (client_id, name, value) VALUES (?,?,?)`,
+          [clientId, name, parseFloat(value)]
+        )
+        res.status(201).json({
+          message: 'account created',
         })
       }
+    })
 
-      try {
-  
-        Connection.query('SELECT * FROM accounts', async function (err, result) {
-          if (err) throw err
-    
-          const foundItem = result.find(item => item.name === name)
-          if (foundItem) {
-            res.status(400).json({
-              message: 'name must be unique',
-            })
-          } else {
-            await Connection.promise().query(
-              `INSERT INTO accounts (client_id, name, value) VALUES (?,?,?)`,
-              [clientId, name, parseFloat(value)]
-            )
-            res.status(201).json({
-              message: 'account created',
-            })
-          }
-        })
-    
-      } catch (e) {
-        console.error(e)
-        res.status(500).json({
-          message: e,
-        })
-      }
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({
+      message: e,
+    })
+  }
 })
 
 router.put('/accounts', async (req, res) => {
@@ -63,7 +63,7 @@ router.put('/accounts', async (req, res) => {
   console.log(req.body)
 
   if (!id) {
-    res.status(400).json({
+    return res.status(400).json({
       message: '[id] must not be empty',
     })
   } else {
@@ -92,10 +92,9 @@ router.delete('/accounts/:id', async (req, res) => {
   try {
     const { id } = req.params
     if (!id) {
-      res.status(400).json({
+      return res.status(400).json({
         message: 'id must be number'
       })
-      return
     }
     await Connection.promise().query(
       `DELETE FROM accounts where id = ?`,

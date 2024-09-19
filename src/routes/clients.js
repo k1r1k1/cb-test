@@ -20,37 +20,37 @@ router.get('/clients', async (_, res) => {
 
 router.post('/clients', async (req, res) => {
   const { passport, name, lastName, middleName, birthDate } = req.body
-    if (!name || !lastName || !middleName || !birthDate || !passport) return res.status(400).json({
-        message: '[passport, name, lastName, middleName, birthDate] fields must not be empty',
-      })
-    try {
+  if (!name || !lastName || !middleName || !birthDate || !passport) return res.status(400).json({
+    message: '[passport, name, lastName, middleName, birthDate] fields must not be empty',
+  })
+  try {
 
-      Connection.query('SELECT * FROM clients', async function (err, result) {
-        if (err) throw err
-  
-        const foundItem = result.find(item => item.passport === passport)
-        if (foundItem) {
-          res.status(400).json({
-            message: 'passport must be unique',
-          })
-        } else {
-          const regDate = getSqlDate(Date.now())
-          await Connection.promise().query(
-            `INSERT INTO clients (first_name, middle_name, last_name, passport, reg_date, birth_date) VALUES (?,?,?,?,?,?)`,
-            [name, middleName, lastName, passport, regDate, getSqlDate(birthDate)]
-          )
-          res.status(201).json({
-            message: 'client created',
-          })
-        }
-      })
-  
-    } catch (e) {
-      console.error(e)
-      res.status(500).json({
-        message: e,
-      })
-    }
+    Connection.query('SELECT * FROM clients', async function (err, result) {
+      if (err) throw err
+
+      const foundItem = result.find(item => item.passport === passport)
+      if (foundItem) {
+        res.status(400).json({
+          message: 'passport must be unique',
+        })
+      } else {
+        const regDate = getSqlDate(Date.now())
+        await Connection.promise().query(
+          `INSERT INTO clients (first_name, middle_name, last_name, passport, reg_date, birth_date) VALUES (?,?,?,?,?,?)`,
+          [name, middleName, lastName, passport, regDate, getSqlDate(birthDate)]
+        )
+        res.status(201).json({
+          message: 'client created',
+        })
+      }
+    })
+
+  } catch (e) {
+    console.error(e)
+    res.status(500).json({
+      message: e,
+    })
+  }
 })
 
 router.put('/clients', async (req, res) => {
@@ -80,10 +80,9 @@ router.delete('/clients/:id', async (req, res) => {
   try {
     const { id } = req.params
     if (!id) {
-      res.status(400).json({
+      return res.status(400).json({
         message: 'id must be number'
       })
-      return
     }
     await Connection.promise().query(
       `DELETE FROM clients where id = ?`,

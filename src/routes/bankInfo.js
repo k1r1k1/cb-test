@@ -20,8 +20,8 @@ router.get('/info', async (_, res) => {
 router.post('/info', async (req, res) => {
   const { description, data, name } = req.body
   if (!name || !data) return res.status(400).json({
-      message: 'name and data must not be empty',
-    })
+    message: 'name and data must not be empty',
+  })
   try {
 
     Connection.query('SELECT * FROM info', async function (err, result) {
@@ -55,8 +55,8 @@ router.put('/info', async (req, res) => {
   const { id, description, data, name } = req.body
 
   if (!name || !data || !id) return res.status(400).json({
-      message: 'id, name and data must not be empty',
-    })
+    message: 'id, name and data must not be empty',
+  })
 
   try {
     await Connection.promise().query(
