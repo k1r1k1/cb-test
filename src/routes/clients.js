@@ -8,7 +8,6 @@ router.get('/clients/:id?', async (req, res) => {
   const { id } = req.params
   try {
     if (id) {
-      console.log(id)
       Connection.query('SELECT * FROM clients WHERE id = ?', [id], async function (err, result) {
         if (err) throw err
         res.status(200).json(result)

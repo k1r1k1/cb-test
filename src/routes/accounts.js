@@ -3,12 +3,20 @@ import Connection from '../sqlConnection.js'
 
 const router = express.Router()
 
-router.get('/accounts', async (_, res) => {
+router.get('/accounts/:name?', async (req, res) => {
+  const { name } = req.params
   try {
-    Connection.query('SELECT * FROM accounts', async function (err, result) {
-      if (err) throw err
-      res.status(200).json(result)
-    })
+    if (name) {
+      Connection.query('SELECT * FROM accounts WHERE name = ?', [name], async function (err, result) {
+        if (err) throw err
+        res.status(200).json(result)
+      })
+    } else {
+      Connection.query('SELECT * FROM accounts', async function (err, result) {
+        if (err) throw err
+        res.status(200).json(result)
+      })
+    }
   } catch (e) {
     console.error(e)
     res.status(500).json({
