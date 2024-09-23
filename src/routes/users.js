@@ -30,7 +30,7 @@ router.post('/register', async (req, res) => {
 
     Connection.query('SELECT * FROM users', async function (err, result) {
       if (err) throw err
-      const foundUser = result.find(user => user.username === username)
+      const foundUser = result.find(user => user.username === username.toLowerCase())
 
       if (foundUser) {
         res.status(403).json({
@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
           await Connection.promise().query(
             `INSERT INTO users (username, password) 
           VALUES (?,?)`,
-            [username, password]
+            [username.toLowerCase(), password]
           )
           res.status(201).json({
             message: 'User Created',
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
 
     Connection.query('SELECT * FROM users', async function (err, result) {
       if (err) throw err
-      const foundUser = result.find(user => user.username === username)
+      const foundUser = result.find(user => user.username === username.toLowerCase())
 
       if (foundUser) {
         if (foundUser.password !== password) {

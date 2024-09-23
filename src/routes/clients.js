@@ -4,12 +4,21 @@ import { getSqlDate } from '../helpers/date.js'
 
 const router = express.Router()
 
-router.get('/clients', async (_, res) => {
+router.get('/clients/:id?', async (req, res) => {
+  const { id } = req.params
   try {
-    Connection.query('SELECT * FROM clients', async function (err, result) {
-      if (err) throw err
-      res.status(200).json(result)
-    })
+    if (id) {
+      console.log(id)
+      Connection.query('SELECT * FROM clients WHERE id = ?', [id], async function (err, result) {
+        if (err) throw err
+        res.status(200).json(result)
+      })
+    } else {
+      Connection.query('SELECT * FROM clients', async function (err, result) {
+        if (err) throw err
+        res.status(200).json(result)
+      })
+    }
   } catch (e) {
     console.error(e)
     res.status(500).json({
